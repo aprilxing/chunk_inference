@@ -1,3 +1,5 @@
+clear; clc; close all
+
 %% Load raw data
 addpath('src/');
 load('example_data/dsp_example.mat');
@@ -39,10 +41,10 @@ nlmf = NonLinearModel.fit(rt_er_data, ...
 % Plot detrended response times
 figure(2);
 clf;
-plot(rt_er_data.sequence_trial, nlmf.Residuals(:, 'Raw'), '.');
+plot(rt_er_data.sequence_trial, table2array(nlmf.Residuals(:, 'Raw')), '.');
 hold on;
 plot(rt_er_data.sequence_trial, ...
-    smooth(double(nlmf.Residuals(:, 'Raw')), 500), 'r-');
+    smooth(table2array(nlmf.Residuals(:, 'Raw')), 500), 'r-');
 xlabel('Trial');
 ylabel('Residual response time');
                          
@@ -50,7 +52,7 @@ ylabel('Residual response time');
 
 % Create a response time and error matrix of trials vs element 
 [rt_seq, er_seq] = mt_to_seq(rt_er_data, ...
-                             double(nlmf.Residuals(:, 'Raw')), ...
+                             table2array(nlmf.Residuals(:, 'Raw')), ...
                              rt_er_data.error);
 
 % Plot results                        
