@@ -49,7 +49,8 @@ else
        logp2 = logp2 - logZ2;
   end
   %   slightly faster version
-  R    = chol(Sigma);
+  Sigma_changed = nearestSPD(Sigma);
+  R    = chol(Sigma_changed);
   logp = -0.5*sum((X/R).^2, 2);
   logZ = 0.5*d*log(2*pi) + sum(log(diag(R)));
   logp = logp - logZ;

@@ -32,7 +32,7 @@ patient_id_simple = 'RCS17';
 rt_seq = zeros(1);
 
 % Log key RTs  
-target = seq_data_log.Trials{4};
+target = seq_data_log.Trials{3};
 
 for i = 1:length(target)
     trial_data = target{i};
