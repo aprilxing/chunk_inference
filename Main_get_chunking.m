@@ -5,8 +5,8 @@ addpath('src/');
 
 % patient_id_simple = 'gRCS02';
 % patient_id_simple = 'gRCS04';
-% patient_id_simple = 'gRCS05';
-patient_id_simple = 'RCS17';
+patient_id_simple = 'gRCS05';
+% patient_id_simple = 'RCS17';
 % patient_id_simple = 'RCS20';
 
 save_figs = 1;
@@ -27,7 +27,7 @@ mat_name = [master_path, '/', file_name, '.mat'];
 load(mat_name, 'seq_data_log')
 
 
-for number = 1:6;
+for number = 2
     %% Build data structure
 
     % % Preallocate sample_table (temporarily called rt_er_data table to correspond with the demo file)
