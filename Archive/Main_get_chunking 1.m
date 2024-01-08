@@ -1,23 +1,36 @@
-% clear; clc; close all
+clear; clc; close all
 
-
-%% Load raw data
+%% Load Demo data
 addpath('src/');
-load('example_data/dsp_example.mat');
+load('example_data/dsp_example.mat', 'rt_er_data');
 
 %% Inputs and conditions
 
-% patient_id_simple = 'GRCS02';
+% patient_id_simple = 'gRCS02';
 % patient_id_simple = 'gRCS04';
-% patient_id_simple = 'gRCS05';
-patient_id_simple = 'RCS17';
+patient_id_simple = 'gRCS05';
+% patient_id_simple = 'RCS17';
 % patient_id_simple = 'RCS20';
+
+condition = 'DBS-off High-Med';
+parsing_condition = 'actual_key_presses_max time'; % Folder path
+
+% trial_begin_condition = 'cue'; subfolder_name = 'Behavior_Starting from cue_begin';
+trial_begin_condition = '1st key press'; subfolder_name = 'Behavior_Starting from 1st key press';
+
+plot_mode = 'key_on_and_off'; % key begin and end will be strictly key presses
+% plot_mode = 'overall_on_and_off'; % key begin and end will be overall key presses (consider capacitance and force)
+
+% Load the target data
+master_path = ['/Users/aprilxing/Library/CloudStorage/Box-Box/Motor Chunking Analysis/', patient_id_simple, '/', subfolder_name, '/', parsing_condition];
+file_name = [patient_id_simple, '_seq_data_log, ', condition, ' Day 2-4', ', begin with ', trial_begin_condition, ', ', plot_mode, ', ', '07-Jan-2024']; %char(datetime('today'))
+mat_name = [master_path, '/', file_name, '.mat'];
+load(mat_name, 'seq_data_log')
 
 
 %% Build data structure
 
-% % Preallocate sample_table (temporarily called rt_er_data table to
-% % correspond with the demo file)
+% % Preallocate sample_table (temporarily called rt_er_data table to correspond with the demo file)
 % subject_id = nan(1, 1);
 % day_count = nan(1, 1);
 % sequence_id = nan(1, 1);
@@ -29,21 +42,23 @@ patient_id_simple = 'RCS17';
 % rt_er_data = table(subject_id, day_count, sequence_id, within_day_sequence_trial, movement_time, sequence_trial, sequence_press, error);
 
 
-rt_seq = zeros(1);
+% Choose target day and trial
+target = seq_data_log.Trials{1};
 
-% Log key RTs  
-target = seq_data_log.Trials{3};
+% Reaction time matrix = size(trials, elements)
+rt_seq = zeros(length(target), 5);
 
-for i = 1:length(target)
+% RT = onset of n+1 key - offset of n key
+for i = 1:length(target) % Total trials 
     trial_data = target{i};
     
-    for j = 1:5
+    for j = 1:5 % 5 elements 
         rt_seq(i, j) = trial_data.fk_onset(j+1) - trial_data.fk_offset(j);
     end 
 end 
 
 
-% Create er_seq
+% Create er_seq -- psudo data for now 
 er_seq = zeros(160, 5);
 er_seq(:, 1) = rt_er_data.error(1:160);
 er_seq(:, 2) = rt_er_data.error(161:320);
@@ -84,7 +99,17 @@ title('All possible chunk structures');
 figure(5);
 clf;
 subplot(2, 1, 1);
-imagesc((gamma * chunks)');
+
+% For each trial, get the most possible chunking structure
+final_chunk_structure = zeros(length(gamma), 5);
+
+[maxValues, rowIndices] = max(gamma,[], 2);
+
+for i = 1:length(gamma)
+    final_chunk_structure(i, :) = chunks(rowIndices(i), :)';
+end 
+
+imagesc(final_chunk_structure');
 colormap('jet');
 xlabel('Trial');
 ylabel('Element');
@@ -121,8 +146,6 @@ title('Expected error rate');
 
 
 
-
-
-
-
-
+% figure(5).Position = [1 200 2240 1009];
+fontsize(figure(4), 24, "points")
+fontsize(figure(5), 24, "points")

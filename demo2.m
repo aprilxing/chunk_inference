@@ -105,7 +105,17 @@ title('All possible chunk structures');
 figure(5);
 clf;
 subplot(2, 1, 1);
-imagesc((gamma * chunks)');
+
+% For each trial, get the most possible chunking structure
+final_chunk_structure = zeros(length(gamma), 10);
+
+[maxValues, rowIndices] = max(gamma,[], 2);
+
+for i = 1:length(gamma)
+    final_chunk_structure(i, :) = chunks(rowIndices(i), :)';
+end 
+
+imagesc(final_chunk_structure');
 colormap('jet');
 xlabel('Trial');
 ylabel('Element');
@@ -146,3 +156,4 @@ title('Expected error rate');
 % figure(5).Position = [1 200 2240 1009];
 fontsize(figure(4), 24, "points")
 fontsize(figure(5), 24, "points")
+
