@@ -3,16 +3,13 @@ clear; clc; close all
 %% Inputs and conditions
 addpath('src/');
 
-patient_id_simple = 'gRCS02';
+% patient_id_simple = 'gRCS02';
 % patient_id_simple = 'gRCS04';
-% patient_id_simple = 'gRCS05';
+patient_id_simple = 'gRCS05';
 % patient_id_simple = 'RCS17';
 % patient_id_simple = 'RCS20';
 
-save_figs = 0;
-% save_figs = 1;
-save_mat_data = 0;
-% save_mat_data = 1;
+save_figs = 1;
 
 condition = 'DBS-off High-Med';
 parsing_condition = 'actual_key_presses_max time'; % Folder path
@@ -30,7 +27,7 @@ mat_name = [master_path, '/', file_name, '.mat'];
 load(mat_name, 'seq_data_log')
 
 
-for number = 1
+for number = 3
     %% Build data structure
 
     % % Preallocate sample_table (temporarily called rt_er_data table to correspond with the demo file)
